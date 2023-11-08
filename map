@@ -15,24 +15,38 @@ int main() {
     while (true) {
         int choice;
         cout << "Выберите действие:\n";
-        cout << "1. Ввести английское слово и получить русский перевод\n";
-        cout << "2. Выйти и сохранить словарь\n";
+        cout << "1. Добавить слово в словарь\n";
+        cout << "2. Поиск перевода\n";
+        cout << "3. Выйти и сохранить словарь\n";
         cin >> choice;
+        cin.ignore();
 
         if (choice == 1) {
-            string engWord;
+            string engWord, rusTranslation;
             cout << "Введите английское слово: ";
-            cin >> engWord;
+            getline(cin, engWord);
+
+            if (dictionary.find(engWord) != dictionary.end()) {
+                cout << "Слово уже существует в словаре.\n";
+            } else {
+                cout << "Введите русский перевод: ";
+                getline(cin, rusTranslation);
+                dictionary[engWord] = rusTranslation;
+            }
+        } else if (choice == 2) {
+            string engWord;
+            cout << "Введите английское слово для перевода: ";
+            getline(cin, engWord);
 
             if (dictionary.find(engWord) != dictionary.end()) {
                 cout << "Русский перевод: " << dictionary[engWord] << "\n";
             } else {
                 cout << "Слово не найдено в словаре.\n";
             }
-        } else if (choice == 2) {
+        } else if (choice == 3) {
             ofstream outputFile("slovar.txt");
             for (const auto& entry : dictionary) {
-                outputFile << entry.first << " " << entry.second << "\n";
+                outputFile << entry.first << "=" << entry.second << "\n";
             }
             outputFile.close();
             cout << "Словарь сохранен в файл 'slovar.txt'.\n";
@@ -42,5 +56,7 @@ int main() {
         }
     }
 
+    return 0;
+}
     return 0;
 }
