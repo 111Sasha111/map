@@ -1,0 +1,69 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <map>
+
+using namespace std;
+
+int main() {
+    map<string, string> dictionary;
+    string engWord, rusTranslation;
+
+    ifstream file("slovar.txt");
+    if (file.is_open()) {
+        string line;
+        while (getline(file, line)) {
+            size_t pos = line.find('=');
+            if (pos != string::npos) {
+                string eng = line.substr(0, pos);
+                string rus = line.substr(pos + 1);
+                dictionary[eng] = rus;
+            }
+        }
+        file.close();
+    }
+
+    while (true) {
+        int choice;
+        cout << "Выберите действие:\n";
+        cout << "1. Добавить слово в словарь\n";
+        cout << "2. Поиск перевода\n";
+        cout << "3. Выйти и сохранить словарь\n";
+        cin >> choice;
+        cin.ignore();
+
+        if (choice == 1) {
+            cout << "Введите английское слово: ";
+            getline(cin, engWord);
+            
+            if (dictionary.find(engWord) != dictionary.end()) {
+                cout << "Слово уже существует в словаре.\n";
+            } else {
+                cout << "Введите русский перевод: ";
+                getline(cin, rusTranslation);
+                dictionary[engWord] = rusTranslation;
+            }
+        } else if (choice == 2) {
+            cout << "Введите английское слово для перевода: ";
+            getline(cin, engWord);
+
+            if (dictionary.find(engWord) != dictionary.end()) {
+                cout << "Русский перевод: " << dictionary[engWord] << "\n";
+            } else {
+                cout << "Слово не найдено в словаре.\n";
+            }
+        } else if (choice == 3) {
+            ofstream outputFile("slovar.txt");
+            for (const auto& entry : dictionary) {
+                outputFile << entry.first << "=" << entry.second << "\n";
+            }
+            outputFile.close();
+            cout << "Словарь сохранен в файл 'slovar.txt'.\n";
+            break;
+        } else {
+            cout << "Неправильный выбор, попробуйте снова.\n";
+        }
+    }
+
+    return 0;
+}
