@@ -6,18 +6,24 @@
 using namespace std;
 
 int main() {
-    map<string, string> dictionary;
+    map<string, string> dictionary_eng_to_rus;
+    map<string, string> dictionary_rus_to_eng;
 
-    dictionary["apple"] = "яблоко";
-    dictionary["cat"] = "кот";
-    dictionary["dog"] = "собака";
+    dictionary_eng_to_rus["apple"] = "яблоко";
+    dictionary_eng_to_rus["cat"] = "кот";
+    dictionary_eng_to_rus["dog"] = "собака";
+    
+    dictionary_rus_to_eng["яблоко"] = "apple";
+    dictionary_rus_to_eng["кот"] = "cat";
+    dictionary_rus_to_eng["собака"] = "dog";
 
     while (true) {
         int choice;
         cout << "Выберите действие:\n";
         cout << "1. Добавить слово в словарь\n";
-        cout << "2. Поиск перевода\n";
-        cout << "3. Выйти и сохранить словарь\n";
+        cout << "2. Поиск перевода с английского на русский\n";
+        cout << "3. Поиск перевода с русского на английский\n";
+        cout << "4. Выйти и сохранить словарь\n";
         cin >> choice;
         cin.ignore();
 
@@ -26,32 +32,47 @@ int main() {
             cout << "Введите английское слово: ";
             getline(cin, engWord);
 
-            if (dictionary.find(engWord) != dictionary.end()) {
+            if (dictionary_eng_to_rus.find(engWord) != dictionary_eng_to_rus.end()) {
                 cout << "Слово уже существует в словаре.\n";
             } else {
                 cout << "Введите русский перевод: ";
                 getline(cin, rusTranslation);
-                dictionary[engWord] = rusTranslation;
+                dictionary_eng_to_rus[engWord] = rusTranslation;
+                dictionary_rus_to_eng[rusTranslation] = engWord;
             }
+            
         } else if (choice == 2) {
             string engWord;
-            cout << "Введите английское слово для перевода: ";
+            cout << "Введите английское слово для перевода:";
             getline(cin, engWord);
 
-            if (dictionary.find(engWord) != dictionary.end()) {
-                cout << "Русский перевод: " << dictionary[engWord] << "\n";
+            if (dictionary_eng_to_rus.find(engWord) != dictionary_eng_to_rus.end()) {
+                cout << "Русский перевод: " << dictionary_eng_to_rus[engWord] << "\n";
             } else {
                 cout << "Слово не найдено в словаре.\n";
             }
+            
         } else if (choice == 3) {
+            string rusWord;
+            cout << "Введите русское слово для перевода: ";
+            getline(cin, rusWord);
+
+            if (dictionary_rus_to_eng.find(rusWord) != dictionary_rus_to_eng.end()) {
+                cout << "Английский перевод: " << dictionary_rus_to_eng[rusWord] << "\n";
+            } else {
+                cout << "Слово не найдено в словаре.\n";
+            }
+            
+        } else if (choice == 4) {
             ofstream outputFile("slovar.txt");
-            for (const auto& entry : dictionary) {
+            for (const auto& entry : dictionary_eng_to_rus) {
                 outputFile << entry.first << "=" << entry.second << "\n";
             }
             outputFile.close();
             cout << "Словарь сохранен в файл 'slovar.txt'.\n";
             break;
-        } else {
+        }
+        else {
             cout << "Неправильный выбор, попробуйте снова.\n";
         }
     }
